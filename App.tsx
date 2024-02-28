@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-
 import NetInfo from '@react-native-community/netinfo';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Navigation from './src/navigations';
 import { BLACK, PINK } from './src/styles/colors';
