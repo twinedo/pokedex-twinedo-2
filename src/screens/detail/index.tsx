@@ -32,21 +32,19 @@ const Detail = () => {
 	const { data, isFetched } = useGetPokemonByName(
 		route.params.name
 	) as TResponsePoke;
-	const { favoriteList } = usePokedexStore();
+	const { favoriteList, setFavoriteList } = usePokedexStore();
 
 	const [isFavorite, setisFavorite] = useState(false);
 
 	useEffect(() => {
 		if (data && isFetched) {
 			const dat = [...favoriteList!];
-			const filterFavorite = dat.filter((o) => o.name === route.params.name);
+			const filterFavorite = dat.filter((o) => o.id === data.id);
 			if (filterFavorite.length === 0) {
 				setisFavorite(false);
 			} else {
 				setisFavorite(true);
 			}
-
-			let newItem = {};
 
 			console.log('data detail', data);
 		}
@@ -69,6 +67,18 @@ const Detail = () => {
 			setSpriteImages(newArr);
 		}
 	}, [data]);
+
+	const _onFavoriteHandler = () => {
+		if (isFavorite) {
+			const dat = [...favoriteList!];
+			const filter = dat.filter((o: IPokemonState) => o.id !== data?.id);
+			setFavoriteList(filter!);
+		} else {
+			let dat = [...favoriteList!];
+			dat.push(data);
+			setFavoriteList(dat);
+		}
+	};
 
 	return (
 		<BaseContainer>
@@ -97,6 +107,7 @@ const Detail = () => {
 					<Image
 						source={data?.sprites?.front_default ?? ''}
 						style={{ width: '100%', height: 236 }}
+						contentFit='contain'
 					/>
 					<View
 						style={[
@@ -111,6 +122,7 @@ const Detail = () => {
 							name={isFavorite ? 'heart' : 'heart-outline'}
 							size={24}
 							color={isFavorite ? RED : BLACK}
+							onPress={_onFavoriteHandler}
 						/>
 					</View>
 					<Spacer height={30} />
@@ -134,6 +146,7 @@ const Detail = () => {
 									<Image
 										source={item}
 										style={{ height: 115, width: '100%', flex: 1 }}
+										contentFit='contain'
 									/>
 								</TouchableOpacity>
 							)}

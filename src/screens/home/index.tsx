@@ -21,7 +21,7 @@ import {
 	useGetPokemons,
 } from '../../services/api/pokemons';
 import { Image } from 'expo-image';
-import usePokedexStore from '../../stores/pokemons';
+import usePokedexStore, { IPokemonState } from '../../stores/pokemons';
 
 const Home = () => {
 	const navigation = useNavigation<StackNavigationProp<NavParam, 'Home'>>();
@@ -50,11 +50,22 @@ const Home = () => {
 		if (isFetched) {
 			if (data) {
 				console.log('datanya', data);
-				setList(data?.pages?.flatMap((group) => group?.results));
+				const results = data?.pages?.flatMap((group) => group?.results);
+				let newArr: IPokemonState[] = [];
+				results.map((o, i) => {
+					let item = {
+						...o,
+						id: i + 1,
+					};
+					newArr.push(item);
+				});
+				setList(newArr);
 				// setSearchList(data?.pages?.flatMap((group) => group?.results));
 			}
 		}
 	}, [isFetched]);
+
+	console.log('searchList', searchList);
 
 	return (
 		<BaseContainer>
@@ -115,8 +126,8 @@ const Home = () => {
 								styles.card,
 							]}>
 							<Image
-								source={`${process.env.EXPO_PUBLIC_API_IMAGE}/${index + 1}.png`}
-								style={{ height: 177, width: '100%', flex: 1 }}
+								source={`${process.env.EXPO_PUBLIC_API_IMAGE}/${item.id}.png`}
+								style={{ height: 1772, width: '100%', flex: 1 }}
 							/>
 							<Text style={{ color: BLACK, fontSize: 16, fontWeight: '500' }}>
 								{item?.name}
