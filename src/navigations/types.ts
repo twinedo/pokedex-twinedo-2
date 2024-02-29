@@ -1,5 +1,5 @@
 export type NavParam = {
 	Home: undefined;
-	Detail: undefined;
+	Detail: { name: string };
 	Favorite: undefined;
 };

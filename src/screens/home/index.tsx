@@ -1,5 +1,12 @@
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import {
+	FlatList,
+	StatusBar,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { BaseContainer } from '../../components/layout';
 import { Input, Spacer, Toolbar } from '../../components/basic';
 import { BLACK, GREY1, WHITE } from '../../styles/colors';
@@ -9,19 +16,45 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { NavParam } from '../../navigations/types';
 import globalStyles from '../../styles/globalStyles';
 import { useForm, Controller } from 'react-hook-form';
+import {
+	useGetPokemonByName,
+	useGetPokemons,
+} from '../../services/api/pokemons';
+import { Image } from 'expo-image';
+import usePokedexStore from '../../stores/pokemons';
 
 const Home = () => {
 	const navigation = useNavigation<StackNavigationProp<NavParam, 'Home'>>();
-	const {
-		control,
-		handleSubmit,
-		formState: { errors },
-	} = useForm({
+	const { control, handleSubmit } = useForm({
 		defaultValues: {
 			search: '',
 		},
 	});
-	const onSubmit = (data: { search: string }) => console.log(data);
+
+	const { setList, setSearchList, list, searchList } = usePokedexStore();
+	const onSubmit = (data: { search: string }) => {
+		const dat = [...list];
+		if (data.search.length === 0) {
+			setSearchList(dat);
+		} else {
+			const filter = dat.filter((o) =>
+				o.name.toLowerCase().includes(data.search.toLowerCase())
+			);
+			setSearchList(filter);
+		}
+	};
+
+	const { data, isFetching, isFetched, hasNextPage, fetchNextPage } =
+		useGetPokemons();
+	useEffect(() => {
+		if (isFetched) {
+			if (data) {
+				console.log('datanya', data);
+				setList(data?.pages?.flatMap((group) => group?.results));
+				// setSearchList(data?.pages?.flatMap((group) => group?.results));
+			}
+		}
+	}, [isFetched]);
 
 	return (
 		<BaseContainer>
@@ -63,12 +96,34 @@ const Home = () => {
 					)}
 					name='search'
 				/>
-				{errors.search && (
-					<Text style={{ color: BLACK }}>This is required.</Text>
-				)}
 				<Spacer height={16} />
-
-				<Text>Home</Text>
+				<FlatList
+					data={searchList ?? []}
+					keyExtractor={(item, i) => i.toString() + item?.id?.toString()}
+					onEndReached={() => (hasNextPage ? fetchNextPage() : {})}
+					onEndReachedThreshold={0.7}
+					contentContainerStyle={{ rowGap: 12, columnGap: 16 }}
+					numColumns={2}
+					renderItem={({ item, index }) => (
+						<TouchableOpacity
+							onPress={() =>
+								navigation.navigate('Detail', { name: item?.name })
+							}
+							style={[
+								globalStyles.justifyCenter,
+								globalStyles.alignCenter,
+								styles.card,
+							]}>
+							<Image
+								source={`${process.env.EXPO_PUBLIC_API_IMAGE}/${index + 1}.png`}
+								style={{ height: 177, width: '100%', flex: 1 }}
+							/>
+							<Text style={{ color: BLACK, fontSize: 16, fontWeight: '500' }}>
+								{item?.name}
+							</Text>
+						</TouchableOpacity>
+					)}
+				/>
 			</View>
 		</BaseContainer>
 	);
@@ -76,4 +131,15 @@ const Home = () => {
 
 export default Home;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	card: {
+		borderWidth: 1,
+		borderRadius: 12,
+		borderColor: GREY1,
+		height: 221,
+		flex: 0.5,
+		paddingVertical: 8,
+		marginVertical: 8,
+		marginHorizontal: 8,
+	},
+});
