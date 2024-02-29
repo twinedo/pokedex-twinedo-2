@@ -7,9 +7,9 @@ import {
 } from 'react-native';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { Toolbar, Spacer } from '../../components/basic';
+import { Toolbar } from '../../components/basic';
 import { BaseContainer } from '../../components/layout';
-import { BLACK, GREY1, WHITE, RED } from '../../styles/colors';
+import { BLACK, GREY1, WHITE } from '../../styles/colors';
 import globalStyles from '../../styles/globalStyles';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -60,7 +60,7 @@ const Favorite = () => {
 							<Text>No Favorite found</Text>
 						</View>
 					)}
-					renderItem={({ item, index }) => (
+					renderItem={({ item }) => (
 						<TouchableOpacity
 							onPress={() =>
 								navigation.navigate('Detail', { name: item?.name })

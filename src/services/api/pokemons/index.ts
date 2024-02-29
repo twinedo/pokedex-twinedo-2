@@ -10,7 +10,6 @@ export function useGetPokemons() {
 					method: 'get',
 					url: pageParam,
 				});
-				console.log('list poke', response);
 				return response?.data;
 			} catch (error) {
 				return error;
@@ -36,19 +35,11 @@ export function useGetPokemonByName(name: string) {
 					method: 'get',
 					url: `/pokemon/${name}`,
 				});
-				console.log('poke by name', response);
 				return response?.data;
 			} catch (error) {
 				return error;
 			}
 		},
-		// initialPageParam: 'https://pokeapi.co/api/v2/pokemon/',
-		// getNextPageParam: (lastPage: {
-		// 	count: number;
-		// 	next: string | null;
-		// 	previous: string | null;
-		// 	results: any[];
-		// }) => lastPage?.next! || undefined,
 	});
 	return { ...rest };
 }

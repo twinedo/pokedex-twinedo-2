@@ -27,7 +27,6 @@ type TResponsePoke = {
 const Detail = () => {
 	const navigation = useNavigation<StackNavigationProp<NavParam, 'Detail'>>();
 	const route = useRoute<RouteProp<NavParam, 'Detail'>>();
-	console.log('route', route.params.name);
 
 	const { data, isFetched } = useGetPokemonByName(
 		route.params.name
@@ -36,6 +35,7 @@ const Detail = () => {
 
 	const [isFavorite, setisFavorite] = useState(false);
 
+	//check favorite list and button favorite
 	useEffect(() => {
 		if (data && isFetched) {
 			const dat = [...favoriteList!];
@@ -45,20 +45,17 @@ const Detail = () => {
 			} else {
 				setisFavorite(true);
 			}
-
-			console.log('data detail', data);
 		}
 	}, [data, isFetched, favoriteList]);
 
+	//sprites handler
 	const [spriteImages, setSpriteImages] = useState<string[]>([]);
-
 	useEffect(() => {
 		if (data) {
 			const sprites = data.sprites;
 			console.log(Object.entries(sprites));
 			const slice8 = Object.entries(sprites).slice(0, 8);
 			const filterNotNull = slice8.filter((o) => o[1] !== null);
-			console.log('filteran', filterNotNull);
 			let newArr: string[] = [];
 			filterNotNull.map((o) => {
 				let item = o[1];
@@ -68,6 +65,7 @@ const Detail = () => {
 		}
 	}, [data]);
 
+	//button favorite handler
 	const _onFavoriteHandler = () => {
 		if (isFavorite) {
 			const dat = [...favoriteList!];

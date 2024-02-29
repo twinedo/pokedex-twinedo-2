@@ -222,8 +222,6 @@ type PokedexState = {
 	setList: (data: IPokemonState[]) => void;
 	searchList: IPokemonState[];
 	setSearchList: (data: IPokemonState[]) => void;
-	selectedPokemon: IPokemonState;
-	setSelectedPokemon: (data: IPokemonState) => void;
 	favoriteList: IPokemonState[];
 	setFavoriteList: (data: IPokemonState[]) => void;
 };
@@ -236,9 +234,6 @@ const usePokedexStore = create<PokedexState>()(
 				setList: (data: IPokemonState[]) => set({ list: data }),
 				searchList: [],
 				setSearchList: (data: IPokemonState[]) => set({ searchList: data }),
-				selectedPokemon: {} as IPokemonState,
-				setSelectedPokemon: (data: IPokemonState) =>
-					set({ selectedPokemon: data }),
 				favoriteList: [],
 				setFavoriteList: (data: IPokemonState[]) => set({ favoriteList: data }),
 			}),

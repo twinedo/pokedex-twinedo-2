@@ -6,7 +6,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { BaseContainer } from '../../components/layout';
 import { Input, Spacer, Toolbar } from '../../components/basic';
 import { BLACK, GREY1, WHITE } from '../../styles/colors';
@@ -16,10 +16,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { NavParam } from '../../navigations/types';
 import globalStyles from '../../styles/globalStyles';
 import { useForm, Controller } from 'react-hook-form';
-import {
-	useGetPokemonByName,
-	useGetPokemons,
-} from '../../services/api/pokemons';
+import { useGetPokemons } from '../../services/api/pokemons';
 import { Image } from 'expo-image';
 import usePokedexStore, { IPokemonState } from '../../stores/pokemons';
 
@@ -32,6 +29,7 @@ const Home = () => {
 	});
 
 	const { setList, setSearchList, list, searchList } = usePokedexStore();
+
 	const onSubmit = (data: { search: string }) => {
 		const dat = [...list];
 		if (data.search.length === 0) {
@@ -44,12 +42,10 @@ const Home = () => {
 		}
 	};
 
-	const { data, isFetching, isFetched, hasNextPage, fetchNextPage } =
-		useGetPokemons();
+	const { data, isFetched, hasNextPage, fetchNextPage } = useGetPokemons();
 	useEffect(() => {
 		if (isFetched) {
 			if (data) {
-				console.log('datanya', data);
 				const results = data?.pages?.flatMap((group) => group?.results);
 				let newArr: IPokemonState[] = [];
 				results.map((o, i) => {
@@ -60,12 +56,9 @@ const Home = () => {
 					newArr.push(item);
 				});
 				setList(newArr);
-				// setSearchList(data?.pages?.flatMap((group) => group?.results));
 			}
 		}
 	}, [isFetched]);
-
-	console.log('searchList', searchList);
 
 	return (
 		<BaseContainer>
@@ -92,9 +85,7 @@ const Home = () => {
 				]}>
 				<Controller
 					control={control}
-					rules={{
-						required: false,
-					}}
+					rules={{ required: false }}
 					render={({ field: { onChange, onBlur, value } }) => (
 						<Input
 							placeholder='Search by name...'
@@ -115,7 +106,7 @@ const Home = () => {
 					onEndReachedThreshold={0.7}
 					contentContainerStyle={{ rowGap: 12, columnGap: 16 }}
 					numColumns={2}
-					renderItem={({ item, index }) => (
+					renderItem={({ item }) => (
 						<TouchableOpacity
 							onPress={() =>
 								navigation.navigate('Detail', { name: item?.name })

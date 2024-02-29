@@ -17,7 +17,6 @@ export interface IInputProps extends TextInputProps {
 	containerStyle?: ViewStyle | ViewStyle[];
 	prefixStyle?: ViewStyle | ViewStyle[];
 	postfixStyle?: ViewStyle | ViewStyle[];
-	// You can add more TextInput props here
 }
 
 const Input: React.FC<IInputProps> = ({
